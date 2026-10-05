@@ -1,0 +1,14 @@
+schema: spec-driven
+context: |
+  Project: Autonomous Incident Triage Agent.
+  Source of truth: docs/idea.md and openspec/specs/.
+  Stack: Python 3.11, Gemini, Supabase Postgres/pgvector, LangGraph,
+  FastAPI, Gradio, and Render. Secrets are environment variables only.
+rules:
+  proposal:
+    - State the affected capability and a rollback note.
+  specs:
+    - Use SHALL/MUST requirements with GIVEN/WHEN/THEN scenarios.
+  tasks:
+    - Include mocked LLM/database tests.
+    - Never write secrets to tracked files.

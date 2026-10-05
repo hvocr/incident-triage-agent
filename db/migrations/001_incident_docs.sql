@@ -1,0 +1,4 @@
+create extension if not exists vector;
+create table if not exists public.incident_docs (id bigint generated always as identity primary key, content text not null, metadata jsonb not null default '{}'::jsonb, embedding vector(768) not null, content_hash text generated always as (md5(content)) stored unique, created_at timestamptz not null default now());
+create index if not exists incident_docs_embedding_idx on public.incident_docs using ivfflat (embedding vector_cosine_ops) with (lists = 10);
+create or replace function public.match_incident_docs(query_embedding vector(768), match_count int default 5, filter jsonb default '{}'::jsonb) returns table (id bigint, content text, metadata jsonb, similarity float) language sql stable as $$ select d.id, d.content, d.metadata, 1 - (d.embedding <=> query_embedding) as similarity from public.incident_docs d where d.metadata @> filter order by d.embedding <=> query_embedding limit greatest(match_count, 0); $$;
